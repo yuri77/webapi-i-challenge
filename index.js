@@ -88,7 +88,7 @@ server.put("/api/users/:id", (req, res) => {
   const { id } = req.params;
   const { name, bio } = req.body;
   if (!name && !bio) {
-    return res.status(400).json({ error: "Requires some changes" });
+    return res.status(400).json({ error: "Missing input data" });
   }
   db.update(id, { name, bio })
     .then(updated => {
