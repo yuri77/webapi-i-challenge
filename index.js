@@ -18,24 +18,32 @@ server.get("/api/users", (req, res) => {
 
 server.post("/api/users", (req, res) => {
   console.log(req.body);
-  const user = req.body;
-  db.insert(user)
-    // .then(idObj => db.find())
-    // .then(users => res.status(201).json(users));
-    // .then(Objid =>db.find(Objid.id))
-    .then(({ id }) =>
-     db.findById(id))
-        .then(user => {
-      res.status(201).json(user);
-    })
-        .catch(err=>{console.log(err);
-        res.status(500).json({error:"server error retriving user"})
-    });
-})
-.catch(err=>{
-    console.log(err);
-    res.status(500).json({error:"server error inserting user"
-})
+  //   const user = req.body;
+  const { name, bio } = req.body;
+  if (!name || !bio) {
+    res.status(400).json({ error: "Requires name and bio" });
+  } else {
+    db.insert({ name, bio })
+      // .then(idObj => db.find())
+      // .then(users => res.status(201).json(users));
+      // .then(Objid =>db.find(Objid.id))
+      .then(({ id }) => {
+        db.findById(id)
+          .then(user => {
+            res.status(201).json(user);
+          })
+          .catch(err => {
+            console.log(err);
+            res.status(500).json({ error: "server error retriving user" });
+          });
+      })
+
+      .catch(err => {
+        console.log(err);
+        res.status(500).json({ error: "server error inserting user" });
+      });
+  }
+});
 
 server.get("/api/users/:id", (req, res) => {
   //const id = req.params.id;
