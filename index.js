@@ -67,4 +67,21 @@ server.get("/api/users/:id", (req, res) => {
     });
 });
 
+server.delete("/api/users/:id", (req, res) => {
+  const { id } = req.params;
+  db.remove(id)
+    .then(deleted => {
+      console.log(deleted);
+      if (deleted) {
+        res.status(204).end();
+      } else {
+        res.status(404).json({ error: "User with ID does not exist" });
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({ error: "server error deleting" });
+    });
+});
+
 server.listen(5000, () => console.log("server listening on port 5000"));
